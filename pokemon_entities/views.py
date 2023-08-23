@@ -1,5 +1,4 @@
 import folium
-import json
 from django.utils import timezone
 from .models import *
 from django.http import HttpResponseNotFound
@@ -80,7 +79,9 @@ def show_pokemon(request, pokemon_id):
         'pokemon_id': requested_pokemon.id,
         'img_url': image_url,
         'title_ru': requested_pokemon.pokemon.title,
-        'description': requested_pokemon.pokemon.description
+        'description': requested_pokemon.pokemon.description,
+        'title_en': requested_pokemon.pokemon.eng_name,
+        'title_jp': requested_pokemon.pokemon.jap_name
     }
     print(pokemon_on_page)
     return render(request, 'pokemon.html', context={
