@@ -77,9 +77,10 @@ def show_pokemon(request, pokemon_id):
         image_url
     )
     pokemon_on_page = {
-        'pokemon_id': pokemon.id,
+        'pokemon_id': requested_pokemon.id,
         'img_url': image_url,
-        'title_ru': pokemon.pokemon.title,
+        'title_ru': requested_pokemon.pokemon.title,
+        'description': requested_pokemon.pokemon.description
     }
     print(pokemon_on_page)
     return render(request, 'pokemon.html', context={
