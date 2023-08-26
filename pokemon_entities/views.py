@@ -58,41 +58,45 @@ def show_all_pokemons(request):
 
 def show_pokemon(request, pokemon_id):
     try:
-        requested_pokemon = PokemonEntity.objects.get(id=pokemon_id)
-        image_url = request.build_absolute_uri(requested_pokemon.pokemon.photo.url)
+        requested_pokemon_entity = PokemonEntity.objects.get(id=pokemon_id)
+        image_url = request.build_absolute_uri(requested_pokemon_entity.pokemon.photo.url)
     except PokemonEntity.DoesNotExist:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
-    # Создайте словари для следующей и предыдущей эволюции
+    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
+
     next_evolution_data = None
     previous_evolution_data = None
 
-    if requested_pokemon.pokemon.next_evolution:
+    related_pokemon = requested_pokemon_entity.pokemon.related_pokemon.first()
+    if related_pokemon:
         next_evolution_data = {
-            'title_ru': requested_pokemon.pokemon.next_evolution.title,
-            'pokemon_id': requested_pokemon.pokemon.next_evolution.id,
-            'img_url': request.build_absolute_uri(requested_pokemon.pokemon.next_evolution.photo.url),
+            'title_ru': related_pokemon.title,
+            'pokemon_id': related_pokemon.id,
+            'img_url': request.build_absolute_uri(related_pokemon.photo.url),
         }
 
-    if requested_pokemon.pokemon.previous_evolution:
+    evolution = requested_pokemon_entity.pokemon.evolution
+    if evolution:
         previous_evolution_data = {
-            'title_ru': requested_pokemon.pokemon.previous_evolution.title,
-            'pokemon_id': requested_pokemon.pokemon.previous_evolution.id,
-            'img_url': request.build_absolute_uri(requested_pokemon.pokemon.previous_evolution.photo.url),
+            'title_ru': evolution.title,
+            'pokemon_id': evolution.id,
+            'img_url': request.build_absolute_uri(evolution.photo.url),
         }
-    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
+
     context = {
         'map': folium_map._repr_html_(),
         'pokemon': {
-            'pokemon_id': requested_pokemon.id,
+            'pokemon_id': requested_pokemon_entity.id,
             'img_url': image_url,
-            'title_ru': requested_pokemon.pokemon.title,
-            'description': requested_pokemon.pokemon.description,
-            'title_en': requested_pokemon.pokemon.eng_name,
-            'title_jp': requested_pokemon.pokemon.jap_name,
+            'title_ru': requested_pokemon_entity.pokemon.title,
+            'description': requested_pokemon_entity.pokemon.description,
+            'title_en': requested_pokemon_entity.pokemon.eng_name,
+            'title_jp': requested_pokemon_entity.pokemon.jap_name,
             'next_evolution': next_evolution_data,
             'previous_evolution': previous_evolution_data,
         }
     }
 
     return render(request, 'pokemon.html', context=context)
+
