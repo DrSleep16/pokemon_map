@@ -21,8 +21,6 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
     )
     folium.Marker(
         [lat, lon],
-        # Warning! `tooltip` attribute is disabled intentionally
-        # to fix strange folium cyrillic encoding bug
         icon=icon,
     ).add_to(folium_map)
 
@@ -59,31 +57,42 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemons = PokemonEntity.objects.filter(id=pokemon_id)
-    for pokemon in pokemons:
-        if pokemon.id == int(pokemon_id):
-            requested_pokemon = pokemon
-            image_url = request.build_absolute_uri(MEDIA_URL + str(pokemon.pokemon.photo))
-            break
-    else:
+    try:
+        requested_pokemon = PokemonEntity.objects.get(id=pokemon_id)
+        image_url = request.build_absolute_uri(requested_pokemon.pokemon.photo.url)
+    except PokemonEntity.DoesNotExist:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
+    # Создайте словари для следующей и предыдущей эволюции
+    next_evolution_data = None
+    previous_evolution_data = None
+
+    if requested_pokemon.pokemon.next_evolution:
+        next_evolution_data = {
+            'title_ru': requested_pokemon.pokemon.next_evolution.title,
+            'pokemon_id': requested_pokemon.pokemon.next_evolution.id,
+            'img_url': request.build_absolute_uri(requested_pokemon.pokemon.next_evolution.photo.url),
+        }
+
+    if requested_pokemon.pokemon.previous_evolution:
+        previous_evolution_data = {
+            'title_ru': requested_pokemon.pokemon.previous_evolution.title,
+            'pokemon_id': requested_pokemon.pokemon.previous_evolution.id,
+            'img_url': request.build_absolute_uri(requested_pokemon.pokemon.previous_evolution.photo.url),
+        }
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    add_pokemon(
-        folium_map,
-        requested_pokemon.lat,
-        requested_pokemon.lon,
-        image_url
-    )
-    pokemon_on_page = {
-        'pokemon_id': requested_pokemon.id,
-        'img_url': image_url,
-        'title_ru': requested_pokemon.pokemon.title,
-        'description': requested_pokemon.pokemon.description,
-        'title_en': requested_pokemon.pokemon.eng_name,
-        'title_jp': requested_pokemon.pokemon.jap_name
+    context = {
+        'map': folium_map._repr_html_(),
+        'pokemon': {
+            'pokemon_id': requested_pokemon.id,
+            'img_url': image_url,
+            'title_ru': requested_pokemon.pokemon.title,
+            'description': requested_pokemon.pokemon.description,
+            'title_en': requested_pokemon.pokemon.eng_name,
+            'title_jp': requested_pokemon.pokemon.jap_name,
+            'next_evolution': next_evolution_data,
+            'previous_evolution': previous_evolution_data,
+        }
     }
-    print(pokemon_on_page)
-    return render(request, 'pokemon.html', context={
-        'map': folium_map._repr_html_(), 'pokemon': pokemon_on_page
-    })
+
+    return render(request, 'pokemon.html', context=context)

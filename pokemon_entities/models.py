@@ -7,6 +7,9 @@ class Post(models.Model):
     description = models.TextField(default="")
     jap_name = models.CharField(max_length=200, blank=True)
     eng_name = models.CharField(max_length=200, blank=True)
+    previous_evolution = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,related_name='previous_evolutions')
+    next_evolution = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,related_name='next_evolutions')
+
     def __str__(self):
         return self.title
 
@@ -22,6 +25,7 @@ class PokemonEntity(models.Model):
     attack = models.IntegerField(default=None)
     defense = models.IntegerField(default=None)
     stamina = models.IntegerField(default=None)
+
 
     def __str__(self):
         return self.pokemon.title
