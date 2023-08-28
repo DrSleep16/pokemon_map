@@ -33,7 +33,7 @@ def show_all_pokemons(request):
     )
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon in pokemons:
-        image_url = request.build_absolute_uri(MEDIA_URL + str(pokemon.pokemon.photo))
+        image_url = request.build_absolute_uri(pokemon.pokemon.photo.url)
         add_pokemon(
             folium_map,
             pokemon.lat,
