@@ -1,6 +1,6 @@
 import folium
 from django.utils import timezone
-from .models import *
+from .models import Post, PokemonEntity
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from pogomap.settings import MEDIA_URL
