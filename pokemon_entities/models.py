@@ -26,9 +26,9 @@ class Post(models.Model):
         verbose_name='Английское название',
         blank=True
     )
-    evolution = models.ForeignKey(
+    previous_evolution = models.ForeignKey(
         'self',
-        verbose_name='Эволюцонировал из',
+        verbose_name='Эволюционировал из',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
