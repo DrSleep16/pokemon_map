@@ -1,7 +1,6 @@
 import folium
 from django.utils import timezone
 from .models import PokemonEntity
-from django.http import HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from pogomap.settings import MEDIA_URL
 
@@ -96,4 +95,3 @@ def show_pokemon(request, pokemon_id):
     }
 
     return render(request, 'pokemon.html', context=context)
-
