@@ -13,8 +13,8 @@ class Post(models.Model):
         null=True
     )
     description = models.TextField(
-        default="",
-        verbose_name='Описание'
+        verbose_name='Описание',
+        null=False
     )
     jap_name = models.CharField(
         max_length=200,
