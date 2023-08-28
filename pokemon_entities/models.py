@@ -5,7 +5,7 @@ class Post(models.Model):
     title = models.CharField(
         max_length=200,
         verbose_name='Название',
-        blank=True
+        blank=False
     )
     photo = models.ImageField(
         upload_to='pokemons_images',
