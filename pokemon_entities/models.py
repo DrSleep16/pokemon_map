@@ -53,31 +53,29 @@ class PokemonEntity(models.Model):
         verbose_name='Долгота'
     )
     appeared_at = models.DateTimeField(
-        default=None,
         verbose_name='Время появления'
     )
     disappeared_at = models.DateTimeField(
-        default=None,
         verbose_name='Время исчезновения'
     )
     level = models.IntegerField(
-        default=None,
+        default=1,
         verbose_name='Уровень'
     )
     health = models.IntegerField(
-        default=None,
+        default=100,
         verbose_name='Здоровье'
     )
     attack = models.IntegerField(
-        default=None,
+        default=10,
         verbose_name='Атака'
     )
     defense = models.IntegerField(
-        default=None,
+        default=10,
         verbose_name='Защита'
     )
     stamina = models.IntegerField(
-        default=None,
+        default=100,
         verbose_name='Стамина'
     )
 
