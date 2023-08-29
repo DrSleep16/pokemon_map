@@ -32,7 +32,7 @@ class Post(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='related_pokemon'
+        related_name='evolutions'
     )
 
     def __str__(self):
@@ -44,7 +44,7 @@ class PokemonEntity(models.Model):
         Post,
         verbose_name='Покемон',
         on_delete=models.CASCADE,
-        related_name='pokemon'
+        related_name='entities'
     )
     lat = models.FloatField(
         verbose_name='Широта'
