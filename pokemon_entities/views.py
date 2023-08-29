@@ -40,6 +40,7 @@ def show_all_pokemons(request):
         )
 
     pokemons_on_page = []
+    pokemons_entities = PokemonEntity.objects.all()
     for pokemon in pokemons_entities:
         image_url = request.build_absolute_uri(pokemon.pokemon.photo.url)
         pokemons_on_page.append({
