@@ -2,7 +2,6 @@ import folium
 from django.utils import timezone
 from .models import PokemonEntity
 from django.shortcuts import render, get_object_or_404
-from pogomap.settings import MEDIA_URL
 
 
 MOSCOW_CENTER = [55.751244, 37.618423]
@@ -42,7 +41,7 @@ def show_all_pokemons(request):
 
     pokemons_on_page = []
     for pokemon in pokemons:
-        image_url = request.build_absolute_uri(MEDIA_URL + str(pokemon.pokemon.photo))
+        image_url = request.build_absolute_uri(pokemon.pokemon.photo.url)
         pokemons_on_page.append({
             'pokemon_id': pokemon.id,
             'img_url': image_url,
