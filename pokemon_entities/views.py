@@ -64,7 +64,7 @@ def show_pokemon(request, pokemon_id):
     next_evolution_data = None
     previous_evolution_data = None
 
-    related_pokemon_entity = requested_pokemon_entity.pokemon.evolutions.first()
+    related_pokemon_entity = requested_pokemon_entity.pokemon.next_evolution.first()
     if related_pokemon_entity:
         next_evolution_data = {
             'title_ru': related_pokemon_entity.title,
